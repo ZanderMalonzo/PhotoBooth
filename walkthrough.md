@@ -1,14 +1,36 @@
-# PhotoBooth Web Application - Walkthrough
+# PhotoBooth by Zander — Features & Deployment Guide
 
-A modern, responsive, client-side **PhotoBooth Web Application** built with React, TypeScript, Vite, Tailwind CSS v4, HTML5 MediaDevices & Canvas APIs, and Web Audio API.
+A modern, responsive, client-side **PhotoBooth Web Application** built with React, TypeScript, Vite, Tailwind CSS v4, HTML5 MediaDevices & Canvas APIs, Web Audio API, and **Google Gemini 2.5 Flash Multimodal AI**.
 
 ---
 
-## 📸 Key Features Delivered
+## 🤖 NEW: Google Gemini Multimodal AI Studio
+Integrated directly into both the **Live Camera Booth** and the **Customization Studio**:
+
+1. **Multimodal Photo Analysis (`gemini-2.5-flash`)**:
+   - Inspects lighting conditions, facial expressions, and scene ambience.
+   - Provides personalized AI observations (e.g., *"Natural warm daylight portrait with balanced lighting"*).
+2. **Smart Sliders Auto-Tuning**:
+   - Computes tailored adjustments for Brightness, Contrast, Saturation, Warmth, Vignette, and Film Grain.
+   - 1-click **Apply Smart Tuning**.
+3. **AI Style & Filter Matcher**:
+   - Recommends the ideal filter from 70+ filters (e.g., *Golden Glow*, *Vintage 90s*, *Cyberpunk*, *Soft Pink*).
+   - 1-click **Apply Filter**.
+4. **AI Magic Captions**:
+   - Generates 3 trendy, aesthetic photobooth captions with emojis.
+   - 1-click to instantly stamp onto your photo strip in cute typography!
+5. **Smart Sticker Matching**:
+   - Suggests matching emojis and stickers based on photo mood.
+6. **100% Client-Side API Key Storage**:
+   - Enter your free Gemini API key once; it stays securely stored in your browser's `localStorage` and never leaves your device.
+
+---
+
+## 📸 Core PhotoBooth Features
 
 ### 1. Live Camera System
 - **Real-Time Video Stream**: Directly connects to webcam with automatic device detection (`navigator.mediaDevices.enumerateDevices`).
-- **Camera Switching**: Toggle between front (selfie) and rear (environment) cameras or pick specific camera input devices.
+- **Camera Switching**: Toggle between front (selfie) and rear (environment) cameras or select specific camera input devices.
 - **Mirror Mode**: Instant horizontal flip toggle for authentic selfie booth experience.
 - **Aspect Ratio Selector**: 4:3, 1:1 Square, 3:4 Portrait, 16:9 Landscape, 9:16 Mobile Story.
 - **Countdowns**: 3s, 5s, 10s, or instant (Off).
@@ -32,24 +54,13 @@ A modern, responsive, client-side **PhotoBooth Web Application** built with Reac
 - **Filter Intensity Slider 🎚️**: Smooth 0% to 100% blend slider.
 - **Before / After 👁️**: Hold to compare button to temporarily view unfiltered preview.
 - **Auto Enhance ✨**: Instant 1-click tone optimization.
+- **Gemini AI 🤖**: Multimodal AI lighting and style analysis.
 
 ---
 
 ### 3. Layered Real-Time Particle Effects
 - Multi-select particle overlays rendered using an optimized 60fps `requestAnimationFrame` canvas engine:
-  - **Floating Hearts** 💖
-  - **Stars & Sparkles** ⭐ ✨
-  - **Falling Confetti** 🎉
-  - **Sakura Petals** 🌸
-  - **Gentle Snow** ❄️
-  - **Rain Streaks** 🌧️
-  - **Rising Fire Embers** 🔥
-  - **Iridescent Bubbles** 🫧
-  - **Falling Autumn Leaves** 🍂
-  - **Neon Electric Particles** ⚡
-  - **Glitter Dust** 💫
-  - **Vintage Light Leaks & Lens Flare** 🏮 ☀️
-  - **35mm Film Grain & VHS Static Noise** 🎞️ 📼
+  - **Floating Hearts** 💖, **Stars & Sparkles** ⭐ ✨, **Falling Confetti** 🎉, **Sakura Petals** 🌸, **Gentle Snow** ❄️, **Rain Streaks** 🌧️, **Rising Fire Embers** 🔥, **Iridescent Bubbles** 🫧, **Falling Autumn Leaves** 🍂, **Neon Electric Particles** ⚡, **Glitter Dust** 💫, **Vintage Light Leaks & Lens Flare** 🏮 ☀️, **35mm Film Grain & VHS Static Noise** 🎞️ 📼.
 - Multiple effects can be enabled and combined simultaneously!
 
 ---
@@ -63,49 +74,28 @@ A modern, responsive, client-side **PhotoBooth Web Application** built with Reac
 ---
 
 ### 5. Layout & Customization Studio
-- **Layouts**:
-  - Photo Strips: 2-Strip, 3-Strip, 4-Strip (classic Korean booth), 5-Strip, 6-Strip.
-  - Grids: 2x2, 3x3, 4x4.
-  - Creative & Social: Polaroid Instant, 35mm Film Negative with sprocket holes, Magazine Cover, Scrapbook, Postcard, Square, 9:16 Story.
-  - Photo Reordering: Move photos up/down or remove individual shots.
-- **Backgrounds**:
-  - Solid colors (White, Cream, Black, Pastel Pink, Pastel Blue, Lavender, Mint, Peach).
-  - Premium Gradients (Sunset, Cyberpunk, Cotton Candy, Aurora, Dark Gold, Bubblegum).
-  - Patterns (Polka Dots, Checkered).
-  - Custom Hex Color Picker.
-- **Frames**:
-  - Classic White, Polaroid Chin, 35mm Film Sprockets, Retro 80s, Glowing Cyber Neon, Sweet Heart, Floral Romance, Birthday Party, Wedding Elegance, Christmas, Halloween.
-- **Stickers Library (50+ items)**:
-  - Categories: Hearts, Stars, Dress-Up Accessories (Sunglasses, Party Hats, Crowns, Bows, Mustaches), Cute Emojis, Celebration, Food, Holiday.
-  - Interactive manipulation: Drag directly on the preview card, scale slider (0.5x - 3.0x), rotate slider (-180° to +180°), delete sticker.
-- **Typography & Text Studio**:
-  - 6 distinctive font styles: Modern Clean (*Plus Jakarta Sans*), Handwritten (*Caveat*), Retro Bold (*Bebas Neue*), Bubble Cute (*Fredoka*), Elegant Serif (*Playfair Display*), 8-Bit Pixel (*Press Start 2P*).
-  - Size slider, color picker + presets, Bold, Italic, Alignment (Left, Center, Right), Drop Shadow, Outline/Stroke, Rotation.
-  - Draggable directly on the preview canvas.
-- **Fine-Tuning Adjustments**:
-  - Sliders for Brightness, Contrast, Saturation, Warmth/Temperature, Blur, Vignette, Film Grain.
-  - "Reset All" button.
+- **Layouts**: Vertical strips (2, 3, 4, 5, 6), grids (2x2, 3x3, 4x4), and creative formats (Polaroid, 35mm film negative with sprocket holes, Magazine cover, Scrapbook, Postcard, Square, 9:16 Story) with photo re-ordering.
+- **Backgrounds**: Solid colors, pastels, gradients, patterns, and custom hex color picker.
+- **Frames**: Classic White, Polaroid, 35mm Film, Retro 80s, Glowing Cyber Neon, Sweet Heart, Floral, Birthday, Wedding, Christmas, Halloween.
+- **Stickers**: 50+ categorized stickers with drag-and-drop, scale, rotation, and deletion.
+- **Typography**: 6 distinct font styles (Modern, Handwritten, Retro Bold, Bubble Cute, Elegant Serif, Pixel 8-bit) with color, shadow, outline, alignment, and rotation controls.
+- **Photo Editor**: Fine-tuning sliders for brightness, contrast, saturation, exposure, warmth, blur, vignette, and grain.
 
 ---
 
 ### 6. Export, Share, Print & QR Code
-- **High-Resolution Canvas Compositor**: 300-DPI crystal clear rendering for print-grade photo booth strips.
-- **Multi-Format Export**: PNG (lossless), JPG (compact), WebP (modern).
-- **Web Share API**: Share directly to mobile share sheets.
-- **Clipboard Copy**: Direct image copy to system clipboard.
-- **Instant Print**: Print 2x6" standard strips with print CSS formatting.
-- **QR Code Sharing**: Instant QR code generator for scanning and mobile pairing.
-- **Local Vault (IndexedDB)**: Client-side photo vault allowing users to review, re-download, or delete saved photo strips anytime.
+- Lossless PNG, JPG, and WebP downloads at 300-DPI print quality.
+- Web Share API and native clipboard copy.
+- Printable 2x6" photo strip formatting.
+- Instant QR code generator for mobile scanning.
+- Client-side Photo Vault (IndexedDB) with privacy protection: **"Your photos stay on your device."**
 
 ---
 
-## 🔒 Privacy Guarantee
-- Displayed prominently in header and footer:
-  > **100% Private — Your photos stay on your device.**
-  > No server uploads, no cookies, no tracking.
+## 🚀 Push to GitHub & Deploy to Vercel
 
----
+```powershell
+git push -u origin main
+```
 
-## 🛠️ Verification Results
-- **TypeScript & Vite Build**: Passed with `tsc -b && vite build` (0 errors, 0 warnings).
-- **Local Dev Server**: Active at `http://localhost:5174/`.
+Then go to [vercel.com/new](https://vercel.com/new), select `ZanderMalonzo/PhotoBooth`, and click **Deploy**!
