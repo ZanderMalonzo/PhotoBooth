@@ -18,6 +18,7 @@ import {
   saveStoredGeminiApiKey,
   removeStoredGeminiApiKey,
   GeminiEnhanceResult,
+  runOfflineSmartEnhance,
 } from '../../utils/gemini';
 import { FilterConfig, PhotoAdjustments, PlacedSticker, PlacedText } from '../../types';
 import { FILTERS } from '../../config/filters';
@@ -94,6 +95,26 @@ export const GeminiEnhanceModal: React.FC<GeminiEnhanceModalProps> = ({
         // Not a JSON string
       }
       setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRunOffline = async () => {
+    if (!currentPhotoDataUrl) {
+      setError('No photo available to analyze. Please take a photo first!');
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+    setAppliedActions([]);
+    try {
+      await new Promise((r) => setTimeout(r, 500));
+      const res = await runOfflineSmartEnhance(currentPhotoDataUrl);
+      setResult(res);
+    } catch {
+      setError('Failed to analyze photo locally.');
     } finally {
       setIsLoading(false);
     }
@@ -197,31 +218,75 @@ export const GeminiEnhanceModal: React.FC<GeminiEnhanceModalProps> = ({
 
         {/* Error message */}
         {error && (
-          <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{error}</span>
+          <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs flex flex-col gap-2.5">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="font-semibold text-rose-300">{error}</p>
+                {(error.toLowerCase().includes('denied') ||
+                  error.toLowerCase().includes('access') ||
+                  error.toLowerCase().includes('permission') ||
+                  error.toLowerCase().includes('403')) && (
+                  <div className="mt-2 text-[11px] text-slate-300 bg-slate-950/70 p-2.5 rounded-xl border border-rose-500/20 leading-relaxed">
+                    <strong className="text-amber-300">Why this happens:</strong> Google Cloud accounts linked to schools or corporate domains often block Gemini API.
+                    <br />
+                    <strong>Quick Fix:</strong> In{' '}
+                    <a
+                      href="https://aistudio.google.com/apikey"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-indigo-400 underline font-semibold"
+                    >
+                      Google AI Studio
+                    </a>
+                    , make sure you are logged in with your personal <code className="text-indigo-200">@gmail.com</code> account, click <em>Create API key</em>, and select <em>Create API key in new project</em>.
+                  </div>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleRunOffline}
+              disabled={isLoading}
+              type="button"
+              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 to-pink-500/20 hover:from-amber-500/30 hover:to-pink-500/30 border border-amber-500/40 text-amber-200 text-xs font-bold transition flex items-center justify-center gap-1.5"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Use Smart Offline Enhance Instead (Instant, No Key)</span>
+            </button>
           </div>
         )}
 
-        {/* Action Trigger */}
+        {/* Action Triggers */}
         {!result && (
-          <button
-            onClick={handleRunEnhance}
-            disabled={isLoading || !apiKey.trim()}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500 text-white font-extrabold text-sm shadow-xl shadow-indigo-500/30 hover:opacity-95 active:scale-98 transition flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                <span>Gemini Analyzing Photo & Lighting...</span>
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4" />
-                <span>Run Gemini AI Photo Enhance</span>
-              </>
-            )}
-          </button>
+          <div className="flex flex-col gap-2.5">
+            <button
+              onClick={handleRunEnhance}
+              disabled={isLoading || !apiKey.trim()}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500 text-white font-extrabold text-sm shadow-xl shadow-indigo-500/30 hover:opacity-95 active:scale-98 transition flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  <span>Gemini Analyzing Photo & Lighting...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4" />
+                  <span>Run Gemini AI Photo Enhance</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={handleRunOffline}
+              disabled={isLoading}
+              type="button"
+              className="w-full py-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/60 text-xs font-semibold transition flex items-center justify-center gap-1.5 active:scale-98"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Run Smart Offline Enhance (No Key Needed)</span>
+            </button>
+          </div>
         )}
 
         {/* Results Card */}

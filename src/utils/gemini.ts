@@ -166,3 +166,91 @@ Return ONLY valid JSON matching this structure with no markdown backticks:
     };
   }
 }
+
+function getDefaultSmartResult(): GeminiEnhanceResult {
+  return {
+    analysis: 'Smart Analysis: Balanced lighting and enhanced portrait vibrance.',
+    recommendedFilterId: 'pink-glow',
+    adjustments: {
+      brightness: 12,
+      contrast: 15,
+      saturation: 18,
+      temperature: 8,
+      vignette: 12,
+      grain: 8,
+      blur: 0,
+      exposure: 0,
+      sharpness: 0,
+    },
+    captions: ['Good Vibes Only ✨', 'Photo Booth Magic 💖', 'Smile Always 📸'],
+    suggestedStickers: ['✨', '💖', '🫰'],
+  };
+}
+
+export async function runOfflineSmartEnhance(dataUrl: string): Promise<GeminiEnhanceResult> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(getDefaultSmartResult());
+          return;
+        }
+        ctx.drawImage(img, 0, 0, 64, 64);
+        const data = ctx.getImageData(0, 0, 64, 64).data;
+
+        let totalR = 0;
+        let totalG = 0;
+        let totalB = 0;
+        let totalLuminance = 0;
+        const pixelCount = data.length / 4;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          totalR += r;
+          totalG += g;
+          totalB += b;
+          totalLuminance += 0.299 * r + 0.587 * g + 0.114 * b;
+        }
+
+        const avgL = totalLuminance / pixelCount;
+        const avgR = totalR / pixelCount;
+        const avgB = totalB / pixelCount;
+
+        const brightnessAdj = avgL < 110 ? 18 : avgL > 180 ? -8 : 10;
+        const warmthAdj = avgR > avgB ? 6 : 12;
+        const recFilter = avgR > avgB ? 'golden-glow' : 'pink-glow';
+
+        resolve({
+          analysis: `Smart Analysis: Photo balanced. Average scene luminance calculated at ${Math.round(avgL)}/255. Contrast and warmth optimized.`,
+          recommendedFilterId: recFilter,
+          adjustments: {
+            brightness: brightnessAdj,
+            contrast: 16,
+            saturation: 18,
+            temperature: warmthAdj,
+            vignette: 12,
+            grain: 10,
+            blur: 0,
+            exposure: 0,
+            sharpness: 0,
+          },
+          captions: ['Main Character Energy ✨', 'Living in 4K 📸', 'Golden Hour Vibes 💖'],
+          suggestedStickers: ['✨', '💖', '😎', '👑'],
+        });
+      } catch {
+        resolve(getDefaultSmartResult());
+      }
+    };
+    img.onerror = () => resolve(getDefaultSmartResult());
+    img.src = dataUrl;
+  });
+}
+
