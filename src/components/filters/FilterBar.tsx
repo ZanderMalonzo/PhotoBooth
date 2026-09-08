@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Sparkles, Dices, Eye, Heart, Sliders, Wand2 } from 'lucide-react';
+import { Sparkles, Dices, Eye, Heart, Sliders, Wand2, Bot } from 'lucide-react';
 import { FilterCategory, FilterConfig } from '../../types';
 import { FILTERS } from '../../config/filters';
 
@@ -13,6 +13,7 @@ interface FilterBarProps {
   favoriteFilterIds: string[];
   onToggleFavorite: (id: string) => void;
   onAutoEnhance: () => void;
+  onOpenGeminiAI?: () => void;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -24,6 +25,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   favoriteFilterIds,
   onToggleFavorite,
   onAutoEnhance,
+  onOpenGeminiAI,
 }) => {
   const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
   const [showIntensity, setShowIntensity] = useState(false);
@@ -96,8 +98,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 text-xs font-semibold transition"
           >
             <Wand2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Auto Enhance</span>
+            <span className="hidden sm:inline">Auto</span>
           </button>
+
+          {/* Gemini AI Enhance 🤖 */}
+          {onOpenGeminiAI && (
+            <button
+              onClick={onOpenGeminiAI}
+              title="Gemini AI Multimodal Photo Enhance"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/25 to-pink-500/25 border border-purple-500/40 text-purple-300 hover:bg-purple-500/35 text-xs font-bold transition shadow-sm"
+            >
+              <Bot className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+              <span>Gemini AI</span>
+            </button>
+          )}
 
           {/* Intensity Toggle */}
           <button

@@ -13,7 +13,8 @@ import {
   toggleFavoriteFilter,
   addRecentFilter,
 } from '../utils/storage';
-import { ArrowRight, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { GeminiEnhanceModal } from '../components/common/GeminiEnhanceModal';
 
 interface BoothPageProps {
   onSessionComplete: (photos: CapturedPhoto[]) => void;
@@ -24,7 +25,6 @@ interface BoothPageProps {
 export const BoothPage: React.FC<BoothPageProps> = ({
   onSessionComplete,
   onOpenStudio,
-  capturedPhotosCount,
 }) => {
   // Filter & Effect State
   const [currentFilter, setCurrentFilter] = useState<FilterConfig>(FILTERS[0]);
@@ -32,6 +32,8 @@ export const BoothPage: React.FC<BoothPageProps> = ({
   const [activeEffects, setActiveEffects] = useState<EffectType[]>(['sparkles']);
   const [isComparingOriginal, setIsComparingOriginal] = useState<boolean>(false);
   const [favoriteFilterIds, setFavoriteFilterIds] = useState<string[]>(getFavoriteFilters());
+  const [isGeminiOpen, setIsGeminiOpen] = useState<boolean>(false);
+  const [geminiSnapshotUrl, setGeminiSnapshotUrl] = useState<string>('');
 
   // Camera Hook
   const {
@@ -224,6 +226,24 @@ export const BoothPage: React.FC<BoothPageProps> = ({
         favoriteFilterIds={favoriteFilterIds}
         onToggleFavorite={handleToggleFavorite}
         onAutoEnhance={handleAutoEnhance}
+        onOpenGeminiAI={() => {
+          const snap = capturePhoto(currentFilter, filterIntensity);
+          if (snap) {
+            setGeminiSnapshotUrl(snap);
+            setIsGeminiOpen(true);
+          }
+        }}
+      />
+
+      {/* Gemini Multimodal AI Modal */}
+      <GeminiEnhanceModal
+        isOpen={isGeminiOpen}
+        onClose={() => setIsGeminiOpen(false)}
+        currentPhotoDataUrl={geminiSnapshotUrl}
+        onApplyFilter={(f) => {
+          setCurrentFilter(f);
+          setFilterIntensity(100);
+        }}
       />
     </div>
   );

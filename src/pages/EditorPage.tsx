@@ -18,6 +18,7 @@ import { TextEditor } from '../components/editor/TextEditor';
 import { AdjustmentSliders } from '../components/editor/AdjustmentSliders';
 import { PhotoStripPreview } from '../components/editor/PhotoStripPreview';
 import { DownloadModal } from '../components/share/DownloadModal';
+import { GeminiEnhanceModal } from '../components/common/GeminiEnhanceModal';
 import { renderPhotoStripCanvas } from '../utils/canvasRenderer';
 import {
   Download,
@@ -28,6 +29,7 @@ import {
   Type,
   Sliders,
   Sparkles,
+  Bot,
 } from 'lucide-react';
 
 interface EditorPageProps {
@@ -81,6 +83,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({
 
   // Download Modal State
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState<boolean>(false);
+  const [isGeminiModalOpen, setIsGeminiModalOpen] = useState<boolean>(false);
 
   // Sticker Handlers
   const handleAddSticker = (item: StickerItem) => {
@@ -217,11 +220,20 @@ export const EditorPage: React.FC<EditorPageProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Gemini AI Studio Button */}
+          <button
+            onClick={() => setIsGeminiModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-pink-500/20 border border-purple-500/40 text-purple-300 font-bold text-xs hover:bg-purple-500/30 active:scale-95 transition shadow-sm"
+          >
+            <Bot className="w-4 h-4 text-purple-400 animate-pulse" />
+            <span>Gemini AI Studio</span>
+          </button>
+
           {/* Download & Share Button */}
           <button
             onClick={() => setIsDownloadModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-pink-500/25 hover:opacity-95 active:scale-95 transition"
+            className="flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-pink-500/25 hover:opacity-95 active:scale-95 transition"
           >
             <Download className="w-4 h-4" />
             <span>Download & Share</span>
@@ -361,6 +373,48 @@ export const EditorPage: React.FC<EditorPageProps> = ({
         getCanvasBlob={getCanvasBlob}
         layoutId={currentLayout.id}
         photoCount={photos.length}
+      />
+
+      {/* Gemini Multimodal AI Studio Modal */}
+      <GeminiEnhanceModal
+        isOpen={isGeminiModalOpen}
+        onClose={() => setIsGeminiModalOpen(false)}
+        currentPhotoDataUrl={photos[0]?.dataUrl || ''}
+        onApplyAdjustments={(adj) => setAdjustments(adj)}
+        onAddCaption={(cap) => {
+          const newText: PlacedText = {
+            uid: `text-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            text: cap,
+            x: 50,
+            y: 82,
+            fontId: 'bubble',
+            fontSize: 22,
+            color: '#ffffff',
+            isBold: true,
+            isItalic: false,
+            align: 'center',
+            hasShadow: true,
+            hasOutline: true,
+            outlineColor: '#000000',
+            rotation: 0,
+          };
+          setPlacedTexts((prev) => [...prev, newText]);
+          setSelectedTextUid(newText.uid);
+        }}
+        onAddSticker={(emoji) => {
+          const newSticker: PlacedSticker = {
+            uid: `sticker-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            stickerId: `emoji-${Date.now()}`,
+            content: emoji,
+            isEmoji: true,
+            x: 50,
+            y: 35,
+            scale: 1.4,
+            rotation: 0,
+          };
+          setPlacedStickers((prev) => [...prev, newSticker]);
+          setSelectedStickerUid(newSticker.uid);
+        }}
       />
     </div>
   );
