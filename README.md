@@ -48,113 +48,30 @@ npm run preview
 ## 🌐 Deployment Options
 
 > [!IMPORTANT]
-> **HTTPS Requirement**: The WebRTC Camera API (`navigator.mediaDevices.getUserMedia`) requires an **HTTPS** secure context in production. All cloud platforms below (Vercel, Netlify, Firebase, Cloudflare, GitHub Pages) provide free automatic SSL certificates.
+> **HTTPS Requirement**: The WebRTC Camera API (`navigator.mediaDevices.getUserMedia`) requires an **HTTPS** secure context in production. Vercel automatically provides free global SSL certificates on all deployments.
 
 ---
 
-### Option 1: Vercel (Recommended - Easiest & Fastest)
+## 🌐 Deploy to Vercel
 
-Vercel provides zero-configuration deployment with free global SSL.
+The project includes [`vercel.json`](file:///c:/Users/zander/OneDrive/ZanderIT/OneDrive/IT/Photobooth%20by%20Zander/vercel.json) pre-configured with SPA rewrites and `Permissions-Policy: camera=*` headers so camera access works out of the box.
 
-#### Method A: Using Vercel CLI
-1. Install Vercel CLI (if not already installed):
+### Method A: Deploy via GitHub (Recommended)
+1. Push your code to your repository:
    ```bash
-   npm i -g vercel
+   git push -u origin main
    ```
-2. Run deployment from the project directory:
-   ```bash
-   vercel
-   ```
-3. To deploy to production:
-   ```bash
-   vercel --prod
-   ```
+2. Go to **[vercel.com/new](https://vercel.com/new)**.
+3. Import **`ZanderMalonzo/PhotoBooth`**.
+4. Click **Deploy**.
 
-#### Method B: Using GitHub & Vercel Dashboard
-1. Push your repository to GitHub:
+### Method B: Deploy via Vercel CLI
+1. Run deployment:
    ```bash
-   git add .
-   git commit -m "Initial PhotoBooth commit"
-   git push origin main
+   npx vercel
    ```
-2. Go to [vercel.com/new](https://vercel.com/new).
-3. Import your repository.
-4. Framework Preset will automatically detect **Vite**.
-5. Click **Deploy**. The `vercel.json` included in this repository handles SPA rewrites and camera permission policies.
-
----
-
-### Option 2: Netlify
-
-Netlify includes drag-and-drop or Git-based deployment.
-
-#### Method A: Using Netlify CLI
-1. Install Netlify CLI:
+2. To deploy directly to production:
    ```bash
-   npm install -g netlify-cli
-   ```
-2. Build the project:
-   ```bash
-   npm run build
-   ```
-3. Deploy:
-   ```bash
-   netlify deploy --prod --dir=dist
+   npx vercel --prod
    ```
 
-#### Method B: Drag & Drop
-1. Run `npm run build` to generate the `dist` folder.
-2. Go to [app.netlify.com/drop](https://app.netlify.com/drop).
-3. Drag and drop the `dist` folder into the upload area.
-
----
-
-### Option 3: GitHub Pages
-
-The repository includes a ready-to-use GitHub Actions workflow at `.github/workflows/deploy.yml`.
-
-1. Push code to your GitHub repository.
-2. In your repository on GitHub, go to **Settings** → **Pages**.
-3. Under **Build and deployment** → **Source**, select **GitHub Actions**.
-4. The workflow will automatically trigger on push and publish your site!
-
----
-
-### Option 4: Firebase Hosting
-
-The repository includes `firebase.json` pre-configured.
-
-1. Install Firebase CLI:
-   ```bash
-   npm install -g firebase-tools
-   ```
-2. Login to Firebase:
-   ```bash
-   firebase login
-   ```
-3. Initialize hosting (or link to existing project):
-   ```bash
-   firebase init hosting
-   ```
-   *(Select `dist` as public directory and configure as single-page app).*
-4. Build and deploy:
-   ```bash
-   npm run build
-   firebase deploy --only hosting
-   ```
-
----
-
-### Option 5: Docker Container (Self-Hosting / VPS / Railway / Render)
-
-The repository includes a multi-stage `Dockerfile` and `nginx.conf`.
-
-1. Build the Docker image:
-   ```bash
-   docker build -t photobooth .
-   ```
-2. Run the container on port 80:
-   ```bash
-   docker run -d -p 80:80 --name photobooth-app photobooth
-   ```
-3. Open `http://localhost` in your browser.
