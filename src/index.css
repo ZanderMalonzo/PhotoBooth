@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-modern: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-handwritten: 'Caveat', cursive;
+    --font-retro: 'Bebas Neue', sans-serif;
+    --font-bubble: 'Fredoka', cursive;
+    --font-elegant: 'Playfair Display', serif;
+    --font-pixel: 'Press Start 2P', monospace;
+  }
+
+  body {
+    font-family: var(--font-modern);
+  }
+}
+
+.font-modern { font-family: var(--font-modern); }
+.font-handwritten { font-family: var(--font-handwritten); }
+.font-retro { font-family: var(--font-retro); }
+.font-bubble { font-family: var(--font-bubble); }
+.font-elegant { font-family: var(--font-elegant); }
+.font-pixel { font-family: var(--font-pixel); }
+
+/* Custom scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Animations */
+@keyframes flash {
+  0% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+.animate-camera-flash {
+  animation: flash 0.5s ease-out forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop-in {
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Print styling */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-photo-strip, #printable-photo-strip * {
+    visibility: visible;
+  }
+  #printable-photo-strip {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    box-shadow: none !important;
+  }
+}
+
