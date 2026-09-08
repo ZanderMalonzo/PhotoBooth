@@ -84,7 +84,16 @@ export const GeminiEnhanceModal: React.FC<GeminiEnhanceModalProps> = ({
       setResult(res);
     } catch (err: unknown) {
       const e = err as { message?: string };
-      setError(e.message || 'Failed to connect to Gemini API. Check your key and network.');
+      let msg = e.message || 'Failed to connect to Gemini API. Check your key and network.';
+      try {
+        const parsed = JSON.parse(msg);
+        if (parsed?.error?.message) {
+          msg = parsed.error.message;
+        }
+      } catch {
+        // Not a JSON string
+      }
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +130,7 @@ export const GeminiEnhanceModal: React.FC<GeminiEnhanceModalProps> = ({
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-black text-white">Gemini AI Studio</h2>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-pink-300 border border-pink-500/30">
-                  Gemini 2.5 Flash
+                  Gemini 3.6 Flash
                 </span>
               </div>
               <p className="text-xs text-slate-400">

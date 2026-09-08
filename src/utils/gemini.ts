@@ -92,20 +92,38 @@ Return ONLY valid JSON matching this structure with no markdown backticks:
 }
 `;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: [
-      {
-        inlineData: {
-          data: base64Data,
-          mimeType,
-        },
-      },
-      prompt,
-    ],
-  });
+  const modelsToTry = ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.5-flash-lite'];
+  let responseText = '';
+  let lastError: unknown = null;
 
-  const responseText = response.text ? response.text.trim() : '';
+  for (const model of modelsToTry) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [
+          {
+            inlineData: {
+              data: base64Data,
+              mimeType,
+            },
+          },
+          prompt,
+        ],
+      });
+      if (response.text) {
+        responseText = response.text.trim();
+        break;
+      }
+    } catch (err: unknown) {
+      lastError = err;
+      console.warn(`Model ${model} failed, attempting fallback...`, err);
+    }
+  }
+
+  if (!responseText && lastError) {
+    throw lastError;
+  }
+
   const cleanJson = responseText.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '').trim();
 
   try {
